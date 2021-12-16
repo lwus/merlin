@@ -1,3 +1,5 @@
+
+#[cfg(not(target_arch = "bpf"))]
 use rand_core;
 use zeroize::Zeroize;
 
@@ -320,6 +322,7 @@ impl TranscriptRngBuilder {
     /// that the finalized [`TranscriptRng`] is a PRF bound to
     /// randomness from the external RNG, as well as all other
     /// transcript data.
+    #[cfg(not(target_arch = "bpf"))]
     pub fn finalize<R>(mut self, rng: &mut R) -> TranscriptRng
     where
         R: rand_core::RngCore + rand_core::CryptoRng,
@@ -352,6 +355,7 @@ pub struct TranscriptRng {
     strobe: Strobe128,
 }
 
+#[cfg(not(target_arch = "bpf"))]
 impl rand_core::RngCore for TranscriptRng {
     fn next_u32(&mut self) -> u32 {
         rand_core::impls::next_u32_via_fill(self)
@@ -373,6 +377,7 @@ impl rand_core::RngCore for TranscriptRng {
     }
 }
 
+#[cfg(not(target_arch = "bpf"))]
 impl rand_core::CryptoRng for TranscriptRng {}
 
 #[cfg(test)]
